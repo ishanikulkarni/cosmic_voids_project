@@ -5,7 +5,7 @@ import os.path
 #input files
 snapdir = '/project/SPERGEL/COLA_runs/'+wiggle+'/'+realization+'/'
 #snapdir = '/tigress/isk'
-snapum = 0 #redshift 1
+snapum = 0			#redshift 1
 redshift = 1.0
 
 #determine the redshift of the catalogue
@@ -16,9 +16,21 @@ redshift = 1.0
 FoF = readfof.FoF_catalog(snapdir, snapum, long_ids=False, swap=False, SFR=False, read_IDs=False)
 
 #get the properties of the halos
-pos_h = FoF.GroupPos/1e3 #Halo positions in Mpc/h
-mass = FoF.GroupMass*1e10 #Halo masses in Msun/h
-vel_h = FoF.GroupVel*(1.0+redshift) #Halo peculiar velocities in km/s
+pos_h = FoF.GroupPos/1e3		#Halo positions in Mpc/h
+mass = FoF.GroupMass*1e10 		#Halo masses in Msun/h
+vel_h = FoF.GroupVel*(1.0+redshift)	#Halo peculiar velocities in km/s
+Npart = FoF.GroupLen			#Number of CDM particles in the halo
 
-if os.path.exists(snapdir)==False:
-   f= open('tigress/isk/Quijote_,wiggles_,realization #._halos.dat', 'w')
+os.chdir('tigress/isk')		#Change directory to be in my tigress account
+#Check if file exists, and if not, creates file for output
+if os.path.exists("Quijote_wiggles_realization_halos.dat")==False: 
+   touch "$Quijote_wiggles_realization_halos.dat"
+   #I want to somehow make file a variable equal to the filename to be cleaner
+file.writelines(L) for L = [boxlength Omega_m h redshift Npart]
+
+#Need to figure out how to get the x, y, and z components
+file.write(x_pos + ' ' + y_pos + ' ' + z_pos + ' ' + x_vel + ' ' + y_vel + ' ' + z_vel + ' ' + mass)
+   
+boxlength=2000.0
+Omega_m=0.3175
+h=.6711
