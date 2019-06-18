@@ -1,16 +1,16 @@
+import sys
+sys.path.append('/Pylians-master/library/')
 import readfof
 import sys
 import os.path
+import math
 
 #input files
+wiggle = no-wiggles
+realization= "0"
 snapdir = '/project/SPERGEL/COLA_runs/'+wiggle+'/'+realization+'/'
-#snapdir = '/tigress/isk'
-snapum = 0			#redshift 1
+snapnum = 0			#redshift 1
 redshift = 1.0
-
-#determine the redshift of the catalogue
-#z_dict = {4:0.0, 3:0.5, 2:1.0, 1:2.0, 0:3.0}
-#redshift = z_dict[snapum]
 
 #read the halo catalogue
 FoF = readfof.FoF_catalog(snapdir, snapum, long_ids=False, swap=False, SFR=False, read_IDs=False)
@@ -19,24 +19,31 @@ FoF = readfof.FoF_catalog(snapdir, snapum, long_ids=False, swap=False, SFR=False
 pos_h = FoF.GroupPos/1e3		#Halo positions in Mpc/h
 mass = FoF.GroupMass*1e10 		#Halo masses in Msun/h
 vel_h = FoF.GroupVel*(1.0+redshift)	#Halo peculiar velocities in km/s
-Npart = FoF.GroupLen			#Number of CDM particles in the halo
+
+parallax= (1/pos_h)*math.pi/(180*3600)
+x_pos = (pos_h)*math.sin(parallax)
+y_pos = (pos_h)*math.cos(parallax)
+z_pos = math.sqrt((pos_h**2)-(x_pos**2)-(y_pos**2))
+
+x_vel = (vel_h)*math.sin(parallax)
+y_vel = (vel_h)*math.cos(parallax)
+z_vel = math.sqrt((vel_h**2)-(x_vel**2)-(y_vel**2))
 
 boxlength=2000.0
 Omega_m=0.3175
 h=.6711
 
-os.chdir('tigress/isk')		#Change directory to be in my tigress account
+sim="0"
+fpath = '/tigress/isk/COLA_runs/data/z'+zlab+sim+'/'+sim+'_'+wiggle+'_'+realization+'_halos.dat'
 #Check if file exists, and if not, creates file for output
-if os.path.exists("Quijote_wiggles_realization_halos.dat")==False: 
-   touch "$Quijote_wiggles_realization_halos.dat"
+if os.path.exists("Quijote_wiggles_realization_halos.dat")==False:
+   f = open(fpath, 'w+')
+   numhalos = str(len(dict['ID'])) #does the dict['ID'] thing work?
 
-#I want to somehow make "file" a variable that is the filename to be cleaner
-file.writelines(L) for L = [boxlength Omega_m h redshift Npart]
+f.write(boxlength+"\n"+ Omega_m+"\n"+ h+"\n"+ redshift+"\n"+ Npart)
 
 #Need to figure out how to get the x, y, and z components of pos. and vel.
-file.write(x_pos + ' ' + y_pos + ' ' + z_pos + ' ' + x_vel + ' ' + y_vel + ' ' + z_vel + ' ' + mass)
+f.write(x_pos + ' ' + y_pos + ' ' + z_pos + ' ' + x_vel + ' ' + y_vel + ' ' + z_vel + ' ' + mass)
 
-#Not sure what this means or if it is supposed to be a string... I assume it is 
-#just a way to end the file.
-file.write("-99 -99 -99 -99 -99 -99 -99 -99)
-   
+f.write("-99 -99 -99 -99 -99 -99 -99 -99")
+
