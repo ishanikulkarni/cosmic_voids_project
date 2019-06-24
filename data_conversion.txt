@@ -1,49 +1,59 @@
 import sys
-sys.path.append('/Pylians-master/library/')
+sys.path.append('/tigress/isk/Cosmic_voids_project/cosmic_voids_project/Pylians/library/')
 import readfof
 import sys
 import os.path
+import os
 import math
+import numpy as np
 
 #input files
-wiggle = no-wiggles
-realization= "0"
-snapdir = '/project/SPERGEL/COLA_runs/'+wiggle+'/'+realization+'/'
-snapnum = 0			#redshift 1
-redshift = 1.0
+wiggle = "no-wiggles"
+realization= "1"
+snapdir = '/projects/SPERGEL/COLA_runs/'+wiggle+'/'+realization
+snapnum = 1			#redshift 1
+redshift = 0.0
 
 #read the halo catalogue
-FoF = readfof.FoF_catalog(snapdir, snapum, long_ids=False, swap=False, SFR=False, read_IDs=False)
+FoF = readfof.FoF_catalog(snapdir, snapnum, long_ids=False, swap=False, SFR=False, read_IDs=False)
 
 #get the properties of the halos
 pos_h = FoF.GroupPos/1e3		#Halo positions in Mpc/h
 mass = FoF.GroupMass*1e10 		#Halo masses in Msun/h
 vel_h = FoF.GroupVel*(1.0+redshift)	#Halo peculiar velocities in km/s
 
-parallax= (1/pos_h)*math.pi/(180*3600)
-x_pos = (pos_h)*math.sin(parallax)
-y_pos = (pos_h)*math.cos(parallax)
-z_pos = math.sqrt((pos_h**2)-(x_pos**2)-(y_pos**2))
-
-x_vel = (vel_h)*math.sin(parallax)
-y_vel = (vel_h)*math.cos(parallax)
-z_vel = math.sqrt((vel_h**2)-(x_vel**2)-(y_vel**2))
+dict = {}
+dict['ID'] = np.arange(len(pos_h))
+dict['x_pos'] = pos_h[:,0]
+dict['y_pos'] = pos_h[:,1]
+dict['z_pos'] = pos_h[:,2]
+dict['x_vel'] = vel_h[:,0]
+dict['y_vel'] = vel_h[:,1]
+dict['z_vel'] = vel_h[:,2]
 
 boxlength=2000.0
 Omega_m=0.3175
 h=.6711
 
-sim="0"
+zlab = "0"
+sim = "Quijote"
+numhalos = str(len(pos_h))
+'''np.around(x_pos, decimals=8)
+np.around(y_pos, decimals=8)
+np.around(z_pos, decimals=8)
+np.around(x_vel, decimals=8)
+np.around(y_vel, decimals=8)
+np.around(z_vel, decimals=8)
+np.around(mass, decimals=8)'''
+
 fpath = '/tigress/isk/COLA_runs/data/z'+zlab+sim+'/'+sim+'_'+wiggle+'_'+realization+'_halos.dat'
-#Check if file exists, and if not, creates file for output
-if os.path.exists("Quijote_wiggles_realization_halos.dat")==False:
-   f = open(fpath, 'w+')
-   numhalos = str(len(dict['ID'])) #does the dict['ID'] thing work?
-
-f.write(boxlength+"\n"+ Omega_m+"\n"+ h+"\n"+ redshift+"\n"+ Npart)
-
-#Need to figure out how to get the x, y, and z components of pos. and vel.
-f.write(x_pos + ' ' + y_pos + ' ' + z_pos + ' ' + x_vel + ' ' + y_vel + ' ' + z_vel + ' ' + mass)
-
-f.write("-99 -99 -99 -99 -99 -99 -99 -99")
-
+#Check if file exists, and if not, creates file for output 
+if os.path.exists(fpath)==False:
+   file = open(fpath, 'w+')
+   file.write(str(boxlength)+"\n"+ str(Omega_m)+"\n"+ str(h)+"\n"+ str(redshift) + "\n" + str(numhalos) + "\n")
+   data = np.array([dict['ID'], dict['x_pos'] , dict['y_pos'] , dict['z_pos'], dict['x_vel'], dict['y_vel'], dict['z_vel'], mass])
+   data = data.T
+   np.savetxt(file, data, fmt=('%d' ,'%.8f',' %.8f', '%.8f', '%.8f', '%.8f', '%.8f','%d'))
+   #file.write(str(x_pos) + ' ' + str(y_pos) + ' ' + str(z_pos) + ' ' + str(x_vel) + ' ' + str(y_vel) + ' ' + str(z_vel) + ' ' + str(mass))
+   file.write("-99 -99 -99 -99 -99 -99 -99 -99")
+   file.close()
