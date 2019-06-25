@@ -40,13 +40,6 @@ for wiggle in wiggle_set:
     	zlab = "0"
     	sim = "Quijote"
     	numhalos = str(len(pos_h))
-    	'''np.around(x_pos, decimals=8)
-    	np.around(y_pos, decimals=8)
-    	np.around(z_pos, decimals=8)
-    	np.around(x_vel, decimals=8)
-    	np.around(y_vel, decimals=8)
-    	np.around(z_vel, decimals=8)
-    	np.around(mass, decimals=8)'''
 
     	fpath = '/projects/SPERGEL/COLA_runs/data/z'+zlab+sim+'/'+sim+'_'+wiggle+'_'+str(realization)+'_halos.dat'
     	#Check if file exists, and if not, creates file for output 
