@@ -218,20 +218,23 @@ for (redshift,zlab) in zip(redshifts,zlabs):
                 #gg[w+'avgcorr'] = np.zeros(len(gg[w+'corr']))
                 #gg[w+'avgcorr'] += gg[w+'corr']
                 
-                if w+'avgcorr' not in plotarr2.keys():
-                    plotarr2[w+'avgcorr'] = np.zeros(len(gg['r']))
-                    plotarr2[w+'r'] = gg['r']
-                    plotarr2[w+'corr'] = gg['corr']
-                try:
-                    plotarr[w+'r'] == gg['r']
-                except ValueError:
-                    print('r values do not match previous r values')
-                print(gg.keys())
+            if w+'avgcorr' not in plotarr2.keys():
+                plotarr2[w+'avgcorr'] = np.zeros(len(gg['r']))
+                plotarr2[w+'r'] = gg['r']
+                plotarr2[w+'corr'] = gg['corr']
+            try:
+                plotarr2[w+'r'] == gg['r']
+            except ValueError:
+                print('r values do not match previous r values')
+            print(gg.keys())
 
-            plotarr[w+'avgcorr'] += gg['corr']
-            #   plt.figure()    	   
+            plotarr2[w+'avgcorr'] += gg['corr']
+            #   plt.figure()
+    print(plotarr2['wigglesr'])
+    print(plotarr2['wigglesavgcorr'])
+    print(plotarr2['no-wigglesavgcorr'])
     plt.semilogx(plotarr2['wigglesr'],plotarr2['wigglesr']**2.0*(plotarr2['wigglesavgcorr'] - plotarr2['no-wigglesavgcorr'])/num_realizations)
-plt.show()
+    plt.show()
 #plt.plot(datacc[0],datacc[1])
 #   plt.show()
 
