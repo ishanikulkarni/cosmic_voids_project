@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+import os
 import matplotlib as plt
 import matplotlib.pyplot as plt
 
@@ -10,56 +10,90 @@ import sklearn
 from sklearn.model_selection import train_test_split
 
 import sys
-zlab = "0"
+#zlab = "0"
 sim = "Quijote"
 wiggle = "no-wiggles"
 realization = 1
-filename = '/projects/SPERGEL/COLA_runs/data/z'+zlab+sim+'/' +sim+'_'+wiggle+'_'+str(realization)+'_halos.dat'
 
-with open(filename, 'r') as fn:
-     data = pd.read_csv(filename, skiprows = 5,skipfooter=1, delim_whitespace=True, header= None)
-     data.columns= ["ID", "x_pos", "y_pos", "z_pos", "x_vel", "y_vel", "z_vel", "mass"]
-#print(data.head(10))
-#data.info()
-#print(min(data["mass"]))
-#print(max(data["mass"]))
+redshift = 0.0
+sim = 'Quijote'
+zlabs = ['0']
+#zlabs = ['0','1']
+wiggles = ['wiggles'] # 'no-wiggles']
 
-#correlation_matrix = data.corr()
-#plt.subplots(figsize=(8,6))
-#sns.heatmap(correlation_matrix, center =0, annot=True,linewidths=.3)
-#plt.show()
+num_realizations = 2
 
-#corr = data.corr()
-#corr["mass"].sort_values(ascending=True)
-#print(corr)
+boxlength=2000.0
+Omega_m=0.3175
+h=.6711
 
-logdata = np.log10(data["mass"])
+for zlab in zlabs:
+    for wiggle in wiggles:
+        for realization in range(1,num_realizations):
 
-(histogram,bins,patches)= plt.hist(logdata, bins=25,range = [12.5,15.5],edgecolor='black', density=None, histtype='bar', align = 'mid')
+            newfile = '/tigress/isk/COLA_runs/random_sampling/z'+zlab+sim+'_'+wiggle+'_'+'_samples_'+str(realization)+'_halos.dat'
 
-print(len(histogram))
-indices =np.where(bins<13.94)
-print(len(indices))
-print(indices)
-print(histogram[indices])
+            if not os.path.exists(newfile):
+                filename = '/projects/SPERGEL/COLA_runs/data/z'+zlab+sim+'/' +sim+'_'+wiggle+'_'+str(realization)+'_halos.dat'
 
-#histogram.where(bins <13.94, 13.94,inplace=True)
-#print(logdata.value_counts().sort_index())
+                data = pd.read_csv(filename, skiprows = 5,skipfooter=1, delim_whitespace=True, header= None)
+                data.columns= ["ID", "x_pos", "y_pos", "z_pos", "x_vel", "y_vel", "z_vel", "mass"]
+                #print(data.head(10))
+                #data.info()
+                #print(min(data["mass"]))
+                #print(max(data["mass"]))
+    
+                #correlation_matrix = data.corr()
+                #plt.subplots(figsize=(8,6))
+                #sns.heatmap(correlation_matrix, center =0, annot=True,linewidths=.3)
+                #plt.show()
+
+                #corr = data.corr()
+                #corr["mass"].sort_values(ascending=True)
+                #print(corr)
+    
+                logdata = np.round(np.log10(data["mass"]),decimals=4)
+                #logdata = np.log10(data["mass"])
+    
+                '''
+                print(len(histogram))
+                indices =np.where(bins<13.94)
+                print(len(indices))
+                print(indices)
+                print(histogram[indices])
+                '''
+                logdata.where(logdata <14.06, 14.06,inplace=True)
+                print(logdata.value_counts().sort_index())
+                
+                (histogram,bins,patches)= plt.hist(logdata, bins=25,range = [12.5,15.5],edgecolor='black', density=None, histtype='bar', align = 'mid')
+    
+    
+                plt.show()
+                print(histogram)
+                print(bins)
+    
+
+                #sns.distplot(data.mass)
+                #plt.show()
 
 
-plt.show()
-print(histogram)
-print(bins)
+                from sklearn.model_selection import StratifiedShuffleSplit
+                
+                split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+                for train_index, test_index in split.split(data,logdata):
+                    strat_train_set = data.loc[train_index]
+                    strat_test_set = data.loc[test_index]
+                print(strat_test_set.head(25))
+                numhalos= len(strat_test_set)
 
+                os.chdir('/')
+                
+                if not os.path.exists(os.path.dirname(newfile)):
+                    os.makedirs(os.path.dirname(newfile))
 
-#sns.distplot(data.mass)
-#plt.show()
+                f = open(newfile,'w+')
 
-
-from sklearn.model_selection import StratifiedShuffleSplit
-
-split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
-for train_index, test_index in split.split(data,data["mass"]):
-    strat_train_set = histogram.loc[train_index]
-    strat_test_set = histogram.loc[test_index]
-strat_test_set.head(25)
+                f.write(str(boxlength)+"\n"+ str(Omega_m)+"\n"+ str(h)+"\n"+ str(redshift) + "\n" + str(numhalos) + "\n")
+                np.savetxt(f, strat_test_set, fmt=('%d' ,'%.8f',' %.8f', '%.8f', '%.8f', '%.8f', '%.8f','%d'))
+                f.write("-99 -99 -99 -99 -99 -99 -99 -99")
+                f.close()
