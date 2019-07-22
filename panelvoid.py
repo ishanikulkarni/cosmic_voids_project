@@ -51,6 +51,9 @@ filecuts= ['ogwiggles','randomsampling', 'greaterthan10^13.5', 'lessthan10^13.5'
 #filecuts= ['ogwiggles','randomsampling', 'greaterthan10^13.5', 'lessthan10^13.5']
 
 
+
+#CREATING PANEL OF CORRELATION FUNCTIONS. TOP IS CORR FUNC FOR WIGGLES FOR ALL MASS CUTS/SAMPLES AND BOTTOM IS ORIGINAL WIGGLES- NO-WIGGLES
+fig, axs = plt.subplots(2, 1, sharex=True)
 for (file, filecut) in zip(files, filecuts):
 
     file2='/tigress/isk/COLA_runs/plot_data/sampling/z1Quijote/'+filecut+'_Quijote_0_voids.dat'
@@ -107,46 +110,37 @@ for (file, filecut) in zip(files, filecuts):
         for k in gg.attrs:
             print("%s = %s" %(k, str(gg.attrs[k])))
 
-
-
-     
-#CREATING PANEL OF CORRELATION FUNCTIONS. TOP IS CORR FUNC FOR WIGGLES FOR ALL MASS CUTS/SAMPLES AND BOTTOM IS ORIGINAL WIGGLES- NO-WIGGLES
-fig, axs = plt.subplots(2, 1, sharex=True)
-
-
-for filecut in filecuts:
-    #w = 'wiggles'
-    #print(file2)
-    file4 ='/tigress/isk/COLA_runs/plot_data/sampling/z1Quijote/'+filecut+'_Quijote_0_voids.dat'
-    plotarr2= {}
-    #print(file4)
-    data_array = []
-    data_array =  pd.read_csv(file4,delim_whitespace=True, header=None,engine='python',index_col=False,comment='#')
-    gg={}
-    #print(data_array)
-    gg['r'] = data_array[0]
-    gg['corr']=data_array[1]
-    #gg[w+'avgcorr'] = np.zeros(len(gg[w+'corr']))
-    #gg[w+'avgcorr'] += gg[w+'corr']
+    else:
+        file4 ='/tigress/isk/COLA_runs/plot_data/sampling/z1Quijote/'+filecut+'_Quijote_0_voids.dat'
+        plotarr2= {}
+        #print(file4)
+        data_array = []
+        data_array =  pd.read_csv(file4,delim_whitespace=True, header=None,engine='python',index_col=False,comment='#')
+        gg={}
+        #print(data_array)
+        gg['r'] = data_array[0]
+        gg['corr']=data_array[1]
+        #gg[w+'avgcorr'] = np.zeros(len(gg[w+'corr']))
+        #gg[w+'avgcorr'] += gg[w+'corr']
                 
-    if w+'avgcorr' not in plotarr2.keys():
-        plotarr2[w+'avgcorr'] = np.zeros(len(gg['r']))
-    plotarr2[w+'r'] = gg['r']
-    plotarr2[w+'corr'] = gg['corr']
-    try:
-        plotarr2[w+'r'] == gg['r']
-    except ValueError:
-        print('r values do not match previous r values')
-    #print(gg.keys())
+        if w+'avgcorr' not in plotarr2.keys():
+            plotarr2[w+'avgcorr'] = np.zeros(len(gg['r']))
+        plotarr2[w+'r'] = gg['r']
+        plotarr2[w+'corr'] = gg['corr']
+        try:
+            plotarr2[w+'r'] == gg['r']
+        except ValueError:
+            print('r values do not match previous r values')
+        #print(gg.keys())
                             
     plotarr2[w+'avgcorr'] += gg['corr']
    
-    #fig = plt.figure()
-    #panel1 = plt.semilogx(plotarr2['wigglesr'], plotarr2['wigglescorr'], label = 'Wiggle, '+ redshift)
-    #fig.add_subplot(111)
-    #panel2 =  plt.semilogx(plotarr2['wigglesr'], plotarr2['wigglescorr'], label = 'Wiggle, '+ redshift)
+        #fig = plt.figure()
+        #panel1 = plt.semilogx(plotarr2['wigglesr'], plotarr2['wigglescorr'], label = 'Wiggle, '+ redshift)
+        #fig.add_subplot(111)
+        #panel2 =  plt.semilogx(plotarr2['wigglesr'], plotarr2['wigglescorr'], label = 'Wiggle, '+ redshift)
     
-    #print(plotarr2.keys())
+        #print(plotarr2.keys())
     ax = axs[0]
     ax.plot(plotarr2['wigglesr'], plotarr2['wiggles'+'r']**2.0*plotarr2['wigglescorr'], label = filecut)
     ax.set_xscale('log')
