@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 import h5py
+import nbodykit.lab as nlab
 import nbodykit.cosmology as ncosmo
 from nbodykit import CurrentMPIComm, transform
 import dask.array as da
@@ -31,7 +32,7 @@ Nmesh=256
 BoxSize = 2000.0
 
 
-#----------------------------------------------CREATING VOID CUT CATALOGS-----------------------------------------------------------------------------------------------------
+#----------------------------------------------CREATING VOID CUT PLOT-----------------------------------------------------------------------------------------------------------
 for (zlab,redshift) in zip(zlabs,redshifts):
     
     plotarr2 = {}
@@ -45,9 +46,7 @@ for (zlab,redshift) in zip(zlabs,redshifts):
                 file = '/projects/SPERGEL/COLA_runs/voidcatalogs/'+cola+'z'+zlab+sim+'/'+sim+'_ss1.0/sample_'+sim+'_'+w+d+str(realization)+c+'_z'+redshift+'/'+crazy+'centers_central_'+sim+'_'+w+d+str(realization)+c+'_z'+redshift+'.out'
 
                 gadget_format2 = pd.read_csv(file,delim_whitespace=True,engine = 'python', header=None,index_col=False,comment='#')
-
-                heading = '# center x,y,z (Mpc/h), volume (normalized), radius (Mpc/h), redshift, volume (Mpc/h^3), void ID, density contrast, num part, parent ID, tree level, number of children, central density'
-
+                
                 gadget_format = gadget_format2[gadget_format2[4]>40]
  
                 print "read in data"
@@ -57,5 +56,9 @@ for (zlab,redshift) in zip(zlabs,redshifts):
 
                 f = open(file2,'w+')
      
-                np.savetxt(f, gadget_format, header = heading)
+                np.savetxt(f, gadget_format)
                 f.close()
+
+                # print out the meta-data
+                for k in gg.attrs:
+                    print("%s = %s" %(k, str(gg.attrs[k])))

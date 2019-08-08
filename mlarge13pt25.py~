@@ -3,23 +3,23 @@ import numpy as np
 import os
 
 #zlab='0'
-redshift = 0.0
+redshifts = [0.0,1.0]
 sim = 'Quijote'
 #wiggle = 'wiggles'
 #realization = 0
 zlabs = ['0','1']
 wiggles = ['wiggles', 'no-wiggles']
 
-num_realizations = 100
+num_realizations = 1
 
 boxlength=2000.0
 Omega_m=0.3175
 h=.6711
 
-for zlab in zlabs:
+for (zlab,redshift) in zip(zlabs,redshifts):
     for wiggle in wiggles:
         for realization in range(0,num_realizations):
-            newfile = '/projects/SPERGEL/COLA_runs/mass_data/z'+zlab+sim+'_'+wiggle+'_mcut1e13pt5_'+str(realization)+'_halos.dat'
+            newfile = '/projects/SPERGEL/COLA_runs/mass_data/z'+zlab + sim + '/'+sim+'_'+wiggle+'_large_mcut1e13pt25_'+str(realization)+'_halos.dat'
 
             if not os.path.exists(newfile):
                 halo_file = '/projects/SPERGEL/COLA_runs/data/z'+zlab+sim+'/'+sim+'_'+wiggle+'_'+str(realization)+'_halos.dat'
@@ -36,7 +36,7 @@ for zlab in zlabs:
 
          
                 #print(newfile)
-                select_array=data_array[data_array[7]>10**13.5]
+                select_array=data_array[data_array[7]>10**13.25]
                 numhalos = str(len(select_array[0]))
                 #print(select_array)
                 os.chdir('/')

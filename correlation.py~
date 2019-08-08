@@ -18,8 +18,8 @@ sim = 'Quijote'
 #redshift = '0'
 # Should match redshift above; stands for z label in pathname
 #zlab = '1.00'
-redshifts = ['1']
-zlabs = ['1.00']
+redshifts = ['0','1']
+zlabs = ['0.00','1.00']
 scale = 'lin'
 binlab = '_dr1'
 c = '_halos'# #'_cdm'
@@ -147,30 +147,23 @@ for (redshift,zlab) in zip(redshifts,zlabs):
             plotarr[w+'avgcorr'] += gg['corr']
         #print(plotarr.keys())
 
-    plt.figure()
-    plt.semilogx(plotarr['wiggles'+redshift+'r'], plotarr['wiggles'+redshift+'r']**2*plotarr['wigglesavgcorr'], label = 'BAO')
+    #plt.figure()
+    plt.semilogx(plotarr['wiggles'+redshift+'r'], plotarr['wiggles'+redshift+'corr'], label = 'Wiggle, '+ redshift)
     plt.legend()
-    plt.title("Void Correlation Function")
+    plt.title("Void Correlation Function, z = " + redshift)
     plt.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
 
     #plt.figure()
-    plt.semilogx(plotarr['no-wiggles'+redshift+'r'],plotarr['no-wiggles'+redshift+'r']**2*plotarr['no-wigglesavgcorr'], label = 'BAO-removed')
+    plt.semilogx(plotarr['no-wiggles'+redshift+'r'],plotarr['no-wiggles'+redshift+'corr'], label = 'No Wiggles, '+redshift)
     plt.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
-    plt.title("Void Correlation Function")
+    plt.title("Void Correlation Function, z = " + redshift)
     plt.legend()
-    plt.xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]", fontsize = 12)
-    plt.ylabel(r"$r^2 \Delta \xi(r)$ [$h^{3}\mathrm{Mpc}^{-3}$]", fontsize = 12)
-    plt.xlim(xmax = 250)
 
     plt.figure() 
-    plt.semilogx(plotarr['wiggles'+redshift+'r'],plotarr['wiggles'+redshift+'r']**2.0*(plotarr['wigglesavgcorr'] - plotarr['no-wigglesavgcorr'])/num_realizations, label = 'BAO- no-BAO')
-    plt.title('Void Correlation Difference Function')
+    plt.semilogx(plotarr['wiggles'+redshift+'r'],plotarr['wiggles'+redshift+'r']**2.0*(plotarr['wigglesavgcorr'] - plotarr['no-wigglesavgcorr'])/num_realizations)
+    plt.title('Void Correlation Difference Function, z = '+redshift)
     plt.legend()
     plt.hlines(y=0,xmin=0,xmax=1000, linestyles='solid')
-    plt.ylim(ymin = -150, ymax = 150)
-    plt.xlim(xmin = 12, xmax = 250)
-    plt.xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]", fontsize = 12)
-    plt.ylabel(r"$r^2 \Delta \xi(r)$ [$h^{3}\mathrm{Mpc}^{-3}$] BAO - no-BAO", fontsize = 12)
 plt.legend()
 plt.show()
 

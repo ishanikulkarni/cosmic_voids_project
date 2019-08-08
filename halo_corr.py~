@@ -18,16 +18,13 @@ sim = 'Quijote'
 #redshift = '0'
 # Should match redshift above; stands for z label in pathname
 #zlab = '1.00'
-#zlabs = ['0','1']
-#redshifts = ['0.00','1.00']
-
-zlabs = '1'
-redshifts = ['1.00']
+zlabs = ['0','1']
+redshifts = ['0.00','1.00']
 scale = 'lin'
 binlab = '_dr1'
 c = '_halos'# #'_cdm'
 cola = '' #'COLA/'
-num_realizations = 100
+num_realizations = 1
 crazy = '' #'untrimmed_dencut_'
 Nmesh=256
 
@@ -37,12 +34,7 @@ d='_'
 #realization=0
 os.chdir('/')
 
-fig, axs = plt.subplots(2, 1, sharex=True, figsize = (8,10))
-fig.tight_layout
-fig.subplots_adjust(hspace=0)
-fig.subplots_adjust(wspace=0)
-plt.rc('legend', fontsize = 'medium')
-
+### This section is for halos ###
 
 # halos
 plotarr2 = {}
@@ -140,34 +132,23 @@ for (redshift,zlab) in zip(redshifts,zlabs):
             #print(plotarr2['wigglesr'])
             #print(plotarr2['wigglesavgcorr'])
             #print(plotarr2['no-wigglesavgcorr'])
-
-        plotarr2[w+'avgcorr']= plotarr2[w+'avgcorr']/num_realizations
-
-    ax = axs[0]    
-    ax.plot(plotarr2['wigglesr'], plotarr2['wigglesr']**2*plotarr2['wigglesavgcorr'], label = 'BAO')
-    ax.set_xscale('log')
-    ax.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
-    #ax.title('Halo Correlation Function')
-    ax.legend()
             
-    ax.plot(plotarr2['no-wigglesr'],plotarr2['no-wigglesr']**2*plotarr2['no-wigglesavgcorr'], label = 'BAO-removed')
-    ax.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
-    ax.set_xscale('log')
-    ax.legend(loc = "lower left")
-    ax.set_xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]", fontsize = 12)
-    ax.set_ylabel(r"$r^2 \Delta \xi(r)$ [$h^{3}\mathrm{Mpc}^{-3}$]", fontsize = 12)
-    ax.set_xlim(xmin = 20, xmax = 200)
-    #plt.ylim(ymin=-.005,ymax=.02)
+    plt.figure()
+    plt.semilogx(plotarr2['wigglesr'], plotarr2['wigglescorr'], label = 'wiggles, z = ' + redshift)
+    plt.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
+    plt.title('Halo Correlation Function')
+    plt.legend()
+            
+    plt.figure()
+    plt.semilogx(plotarr2['no-wigglesr'],plotarr2['no-wigglescorr'], label = 'No Wiggles, '+redshift)
+    plt.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
+    plt.legend()
 
-    ax = axs[1]
-    ax.plot(plotarr2['wigglesr'],plotarr2['wigglesr']**2.0*(plotarr2['wigglesavgcorr'] - plotarr2['no-wigglesavgcorr'])/num_realizations, label = 'BAO - no-BAO')
-    ax.set_xscale('log')
-    #ax.title('Halo Correlation Difference Function')
-    ax.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
-    ax.legend(loc = "lower left")
-    ax.set_xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]", fontsize = 12)
-    ax.set_ylabel(r"$r^2 \Delta \xi(r)$ [$h^{3}\mathrm{Mpc}^{-3}$] BAO - no-BAO", fontsize = 12)
-    ax.set_xlim(xmin = 20, xmax = 200)
+    plt.figure()
+    plt.semilogx(plotarr2['wigglesr'],plotarr2['wigglesr']**2.0*(plotarr2['wigglesavgcorr'] - plotarr2['no-wigglesavgcorr'])/num_realizations, label = 'wiggles - no-wiggles')
+    plt.title('Halo Correlation Difference Function, z = ' + zlab)
+    plt.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
+    plt.legend()
 plt.show()
 #plt.plot(datacc[0],datacc[1])
 #plt.show()

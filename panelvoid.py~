@@ -154,7 +154,7 @@ plotarr3={}
 
 for w in wiggles:
     for realization in range(0,num_realizations):
-        filewrite = '/tigress/isk/COLA_runs/plot_data/sampling/z1Quijote/' + w + '_Quijote_' + str(realization)+'_voids.dat'
+        filewrite = '/tigress/isk/COLA_runs/testvoids2/plot_data/sampling/z1Quijote/' + w + '_Quijote_' + str(realization)+'_voids.dat'
         
         if not os.path.exists(filewrite):
             filenw = '/projects/SPERGEL/COLA_runs/voidcatalogs/z1Quijote/Quijote_ss1.0/sample_Quijote_' +w + '_'+str(realization)+'_halos_z1.00/centers_central_Quijote_' + w+'_'+ str(realization) +'_halos_z1.00.out'

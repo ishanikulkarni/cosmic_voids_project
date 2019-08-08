@@ -37,9 +37,7 @@ fig, axs = plt.subplots(2, 1, sharex=True, figsize = (8,10))
 fig.tight_layout
 fig.subplots_adjust(hspace=0)
 fig.subplots_adjust(wspace=0)
-plt.rc('legend', fontsize = 'medium')
-plt.rc('xtick', labelsize = 12)
-plt.rc('ytick', labelsize = 12)
+plt.rc('legend', fontsize = 'small')
 
 #---------------------------------CREATING WIGGLES AND NO-WIGGLES FILES AND PLOTTING-------------------------------------------------------------------------------------------------------------------
 
@@ -110,7 +108,7 @@ print("Wrote avg and error file")
 
 
 ax = axs[0]
-ax.plot(plotarr['wigglesr'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'], label = "BAO")
+ax.plot(plotarr['wigglesr'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'])
 ax.fill_between(plotarr['wigglesr'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'] +plotarr['wiggles'+'r']**2.0*sigmaarr['wiggles'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'] -plotarr['wiggles'+'r']**2.0*sigmaarr['wiggles'], alpha=0.2)
 ax.set_xscale('log')
 ax.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
@@ -118,10 +116,6 @@ ax.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
 ax.set_xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]")
 ax.set_ylabel(r"$r^2 \Delta \xi(r)$ [$h^{3}\mathrm{Mpc}^{-3}$]", fontsize = 10)
 ax.set_ylim(ymin = -2500, ymax =2500)
-
-ax.plot(plotarr['no-wigglesr'], plotarr['no-wiggles'+'r']**2.0*plotarr['no-wigglescorr'], label = "BAO-removed")
-ax.fill_between(plotarr['no-wigglesr'], plotarr['no-wiggles'+'r']**2.0*plotarr['no-wigglescorr'] +plotarr['no-wiggles'+'r']**2.0*sigmaarr['no-wiggles'], plotarr['no-wiggles'+'r']**2.0*plotarr['no-wigglescorr'] -plotarr['no-wiggles'+'r']**2.0*sigmaarr['no-wiggles'], alpha=0.2)
-ax.legend(loc = "lower left")
 
 ax = axs[1]
 ax.plot(plotarr['wigglesr'],np.zeros(len(plotarr['wigglesr'])), color='k')

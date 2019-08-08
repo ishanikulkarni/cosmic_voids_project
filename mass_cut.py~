@@ -9,17 +9,20 @@ sim = 'Quijote'
 #realization = 0
 zlabs = ['0','1']
 wiggles = ['wiggles', 'no-wiggles']
+#mcuts = [10**13.5, 10**13]
+#mcutnames = ['1e13pt5','1e13']
 
-num_realizations = 100
+num_realizations = 5
 
 boxlength=2000.0
 Omega_m=0.3175
 h=.6711
 
+#for (statement,mcutname) in (mcuts,mcutnames):
 for zlab in zlabs:
     for wiggle in wiggles:
         for realization in range(0,num_realizations):
-            newfile = '/projects/SPERGEL/COLA_runs/mass_data/z'+zlab+sim+'_'+wiggle+'_mcut1e13pt5_'+str(realization)+'_halos.dat'
+            newfile = '/tigress/isk/COLA_runs/mass_data/z'+zlab+sim+'_'+wiggle+'_mcut1e13pt5_'+str(realization)+'_halos.dat'
 
             if not os.path.exists(newfile):
                 halo_file = '/projects/SPERGEL/COLA_runs/data/z'+zlab+sim+'/'+sim+'_'+wiggle+'_'+str(realization)+'_halos.dat'
@@ -38,11 +41,9 @@ for zlab in zlabs:
                 #print(newfile)
                 select_array=data_array[data_array[7]>10**13.5]
                 numhalos = str(len(select_array[0]))
-                #print(select_array)
+                print(select_array)
                 os.chdir('/')
                 
-                if not os.path.exists(os.path.dirname(newfile)):
-                    os.makedirs(os.path.dirname(newfile))
                 f = open(newfile,'w+')
                 data = np.array([select_array[0], select_array[1], select_array[2], select_array[3], select_array[4], select_array[5], select_array[6], select_array[7]])
                 #next(f)

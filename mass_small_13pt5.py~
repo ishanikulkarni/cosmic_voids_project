@@ -41,8 +41,6 @@ for zlab in zlabs:
                 #print(select_array)
                 os.chdir('/')
                 
-                if not os.path.exists(os.path.dirname(newfile)):
-                    os.makedirs(os.path.dirname(newfile))
                 f = open(newfile,'w+')
                 data = np.array([select_array[0], select_array[1], select_array[2], select_array[3], select_array[4], select_array[5], select_array[6], select_array[7]])
                 #next(f)

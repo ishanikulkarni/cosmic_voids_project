@@ -37,9 +37,7 @@ fig, axs = plt.subplots(2, 1, sharex=True, figsize = (8,10))
 fig.tight_layout
 fig.subplots_adjust(hspace=0)
 fig.subplots_adjust(wspace=0)
-plt.rc('legend', fontsize = 'medium')
-plt.rc('xtick', labelsize = 12)
-plt.rc('ytick', labelsize = 12)
+plt.rc('legend', fontsize = 'large')
 
 #---------------------------------CREATING WIGGLES AND NO-WIGGLES FILES AND PLOTTING-------------------------------------------------------------------------------------------------------------------
 
@@ -110,18 +108,12 @@ print("Wrote avg and error file")
 
 
 ax = axs[0]
-ax.plot(plotarr['wigglesr'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'], label = "BAO")
+ax.plot(plotarr['wigglesr'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'])
 ax.fill_between(plotarr['wigglesr'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'] +plotarr['wiggles'+'r']**2.0*sigmaarr['wiggles'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'] -plotarr['wiggles'+'r']**2.0*sigmaarr['wiggles'], alpha=0.2)
 ax.set_xscale('log')
 ax.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
 #ax.set_title("Voids")
-ax.set_xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]")
-ax.set_ylabel(r"$r^2 \Delta \xi(r)$ [$h^{3}\mathrm{Mpc}^{-3}$]", fontsize = 10)
 ax.set_ylim(ymin = -2500, ymax =2500)
-
-ax.plot(plotarr['no-wigglesr'], plotarr['no-wiggles'+'r']**2.0*plotarr['no-wigglescorr'], label = "BAO-removed")
-ax.fill_between(plotarr['no-wigglesr'], plotarr['no-wiggles'+'r']**2.0*plotarr['no-wigglescorr'] +plotarr['no-wiggles'+'r']**2.0*sigmaarr['no-wiggles'], plotarr['no-wiggles'+'r']**2.0*plotarr['no-wigglescorr'] -plotarr['no-wiggles'+'r']**2.0*sigmaarr['no-wiggles'], alpha=0.2)
-ax.legend(loc = "lower left")
 
 ax = axs[1]
 ax.plot(plotarr['wigglesr'],np.zeros(len(plotarr['wigglesr'])), color='k')
@@ -140,7 +132,8 @@ xi = {}
 for w in wiggles:
     for realization in range(0,num_realizations):
       
-        file = '/projects/SPERGEL/COLA_runs/plot_data/z1Quijote/Xivh_' + w + '_' + str(realization)+'_Quijote_halos_log_largebins.dat'
+        #file = '/projects/SPERGEL/COLA_runs/plot_data/z1Quijote/Xivh_' + w + '_large_voidcut40_' + str(realization)+'_Quijote_halos_log_largebins.dat'
+        file = '/projects/SPERGEL/COLA_runs/plot_data/z1Quijote/Xivh_' + w+'_large_voidrcut40_' + str(realization)+'_Quijote_halos_log_largebins.dat'
 
         data_array = []
         data_array =  pd.read_csv(file,delim_whitespace=True, header=None,engine='python',index_col=False,comment='#')
@@ -186,7 +179,7 @@ for w in wiggles:
     sigmaarr[w] /= num_realizations
     sigmaarr[w] = np.sqrt(sigmaarr[w])
 
-    file = '/tigress/isk/COLA_runs/plot_data/z'+zlab+sim+'/Xivh_100AVG_ERROR_'+w+'_nbodykit_halos_'+scale+binlab+'_drdefault.dat'
+    file = '/tigress/isk/COLA_runs/plot_data/z'+zlab+sim+'/Xivh_100AVG_ERROR_'+w+'_large_voidcut40_'+scale+binlab+'_drdefault.dat'
     if not os.path.exists(os.path.dirname(file)):
         os.makedirs(os.path.dirname(file))
     if not (os.path.exists(file)):
@@ -210,17 +203,21 @@ ax = axs[0]
 ax.plot(plotarr['wigglesr'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'])
 ax.fill_between(plotarr['wigglesr'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'] +plotarr['wiggles'+'r']**2.0*sigmaarr['wiggles'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'] -plotarr['wiggles'+'r']**2.0*sigmaarr['wiggles'], alpha=0.2)
 ax.set_xscale('log')
-ax.set_ylim(ymin = -1000, ymax =1000)
+ax.set_ylim(ymin = -640, ymax =640)
+ax.tick_params(axis = 'y', labelsize = 14)
+ax.set_ylabel(r"$r^2 \xi(r)$ [$h\mathrm{Mpc}^{-1}$]", fontsize = 15)
 
 ax = axs[1]
 ax.plot(plotarr['wigglesr'],np.zeros(len(plotarr['wigglesr'])), color='k')
-ax.plot(plotarr['wigglesr'],plotarr['wigglesr']**2.0*(plotarr['wigglesavgcorr'] - plotarr['no-wigglesavgcorr']), label = 'Void halo cross-correlation')
+ax.plot(plotarr['wigglesr'],plotarr['wigglesr']**2.0*(plotarr['wigglesavgcorr'] - plotarr['no-wigglesavgcorr']), label = 'Void halo cross-correlation for Radius >40')
 ax.fill_between(plotarr['wigglesr'], plotarr['wigglesr']**2.0*(((plotarr['wigglesavgcorr']-plotarr['no-wigglesavgcorr']))+np.sqrt(sigmaarr['wiggles']**2.0 + sigmaarr['no-wiggles']**2.0)), plotarr['wigglesr']**2.0*((plotarr['wigglesavgcorr']-plotarr['no-wigglesavgcorr'])-np.sqrt(sigmaarr['wiggles']**2.0 + sigmaarr['no-wiggles']**2.0)), alpha=0.2)
 ax.set_xscale('log')
 ax.legend(loc = "lower left")
 ax.set_ylim(ymin = -100, ymax = 100)
 ax.set_xlim(xmin = 16, xmax = 250)
-ax.set_xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]", fontsize = 10)
-ax.set_ylabel(r"$r^2 \Delta \xi(r)$ [$h^{3}\mathrm{Mpc}^{-3}$] BAO - no-BAO", fontsize = 10)
+ax.tick_params(axis = 'x', labelsize = 14)
+ax.tick_params(axis = 'y', labelsize = 14)
+ax.set_xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]", fontsize = 15)
+ax.set_ylabel(r"$r^2 \Delta \xi(r)$ [$h\mathrm{Mpc}^{-1}$]", fontsize = 15)
 ax.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
 plt.show()

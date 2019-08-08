@@ -21,7 +21,7 @@ sim = 'Quijote'
 zlabs = ['0','1']
 wiggles = ['wiggles', 'no-wiggles']
 
-num_realizations = 100
+num_realizations = 2
 
 boxlength=2000.0
 Omega_m=0.3175
@@ -29,7 +29,7 @@ h=.6711
 
 for (zlab,redshift) in zip(zlabs,redshifts):
     for wiggle in wiggles:
-        for realization in range(0,num_realizations):
+        for realization in range(1,num_realizations):
 
             newfile = '/projects/SPERGEL/COLA_runs/random_sampling/z'+zlab+sim +'/'+sim+'_'+wiggle+'_samples_'+str(realization)+'_halos.dat'
 

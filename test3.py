@@ -18,8 +18,8 @@ sim = 'Quijote'
 #redshift = '0'
 # Should match redshift above; stands for z label in pathname
 #zlab = '1.00'
-redshifts = ['1']
-zlabs = ['1.00']
+redshifts = ['0','1']
+zlabs = ['0.00','1.00']
 scale = 'lin'
 binlab = '_dr1'
 c = '_halos'# #'_cdm'
@@ -147,126 +147,20 @@ for (redshift,zlab) in zip(redshifts,zlabs):
             plotarr[w+'avgcorr'] += gg['corr']
         #print(plotarr.keys())
 
-    plt.figure()
-    plt.semilogx(plotarr['wiggles'+redshift+'r'], plotarr['wiggles'+redshift+'r']**2*plotarr['wigglesavgcorr'], label = 'BAO')
+    #plt.figure()
+    plt.semilogx(plotarr['wiggles'+redshift+'r'], plotarr['wiggles'+redshift+'corr'], label = 'Wiggle, '+ redshift)
     plt.legend()
-    plt.title("Void Correlation Function")
     plt.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
 
     #plt.figure()
-    plt.semilogx(plotarr['no-wiggles'+redshift+'r'],plotarr['no-wiggles'+redshift+'r']**2*plotarr['no-wigglesavgcorr'], label = 'BAO-removed')
+    plt.semilogx(plotarr['no-wiggles'+redshift+'r'],plotarr['no-wiggles'+redshift+'corr'], label = 'No Wiggles, '+redshift)
     plt.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
-    plt.title("Void Correlation Function")
     plt.legend()
-    plt.xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]", fontsize = 12)
-    plt.ylabel(r"$r^2 \Delta \xi(r)$ [$h^{3}\mathrm{Mpc}^{-3}$]", fontsize = 12)
-    plt.xlim(xmax = 250)
 
     plt.figure() 
-    plt.semilogx(plotarr['wiggles'+redshift+'r'],plotarr['wiggles'+redshift+'r']**2.0*(plotarr['wigglesavgcorr'] - plotarr['no-wigglesavgcorr'])/num_realizations, label = 'BAO- no-BAO')
-    plt.title('Void Correlation Difference Function')
+    plt.semilogx(plotarr['wiggles'+redshift+'r'],plotarr['wiggles'+redshift+'r']**2.0*(plotarr['wigglesavgcorr'] - plotarr['no-wigglesavgcorr'])/num_realizations)
+    plt.title('z = '+redshift)
     plt.legend()
     plt.hlines(y=0,xmin=0,xmax=1000, linestyles='solid')
-    plt.ylim(ymin = -150, ymax = 150)
-    plt.xlim(xmin = 12, xmax = 250)
-    plt.xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]", fontsize = 12)
-    plt.ylabel(r"$r^2 \Delta \xi(r)$ [$h^{3}\mathrm{Mpc}^{-3}$] BAO - no-BAO", fontsize = 12)
 plt.legend()
 plt.show()
-
-#plt.savefig("test.png")
-#fig1, ax1 = plt.subplots(figsize=(5,4))
-#ax1 = plt.subplot(111)
-#ax1.plot(gg['r'],gg['corr'])
-#fig1.savefig('test.png')
-
-'''
-### This section is for halos ###
-
-# halos
-plotarr2 = {}
-for (redshift,zlab) in zip(redshifts,zlabs):
-    for w in wiggles:
-        for realization in range(0,5):
-
-            file4 = '/tigress/isk/COLA_runs/vide_files/plot_data/'+cola+'z'+redshift+sim+'/Xihh_'+w+d+'_nbodykit_'+sim+'_halos_'+scale+binlab+'.dat'
-            
-            if not os.path.exists(file4):
-                file3 ='/projects/SPERGEL/COLA_runs/data/z'+redshift+sim+'/Quijote_'+w+d+str(realization)+'_halos.dat'
-                gadget_format = pd.read_csv(file3,skiprows=5, delim_whitespace=True,engine='python', header=None, index_col=False, comment='#')
-
-                print "read in data"
-
-                data = {}
-
-                data['Position'] = da.from_array(np.column_stack((gadget_format[1], gadget_format[2], gadget_format[3])), chunks=(100,3))
-                data['Velocity'] = da.from_array(np.column_stack((gadget_format[4], gadget_format[5], gadget_format[6])), chunks=(100,3)) #transform.StackColumns
-
-                data = nlab.ArrayCatalog(data)
-
-                print "stacked data"
-
-                # Convert to MeshSource object, BoxSize in Mpc/h
-                mesh = data.to_mesh(window='tsc', Nmesh=Nmesh, BoxSize = BoxSize, compensated=True, position='Position')
-
-                # Halos
-                # Do correlation function
-                #if not (os.path.exists(file4)):
-
-                if not os.path.exists(os.path.dirname(file4)):
-                    os.makedirs(os.path.dirname(file4))
-                f = open(file4, 'w+')
-                f.write('# r Xi(r) Xi(r)-ShotNoise\n')
-                f.write('# z = '+zlab +'\n')
-                        
-                datacc = np.array([gg['r'],gg['corr'].real,gg['corr'].real - gg.attrs['shotnoise']])
-                datacc = datacc.T
-                        
-                np.savetxt(f, datacc)
-                f.close()
-
-                # print out the meta-data
-                for k in gg.attrs:
-                    print("%s = %s" %(k, str(gg.attrs[k])))
-            else:
-                data_array =  pd.read_csv(file2,delim_whitespace=True, header=None,index_col=False,comment='#')
-                gg={}
-                gg['r'] = data_array[0]
-                gg['corr']=data_array[1]
-
-                #gg[w+'avgcorr'] = np.zeros(len(gg[w+'corr']))
-                #gg[w+'avgcorr'] += gg[w+'corr']
-                
-            if w+'avgcorr' not in plotarr2.keys():
-                plotarr2[w+'avgcorr'] = np.zeros(len(gg['r']))
-                plotarr2[w+'r'] = gg['r']
-                plotarr2[w+'corr'] = gg['corr']
-            try:
-                plotarr2[w+'r'] == gg['r']
-            except ValueError:
-                print('r values do not match previous r values')
-            print(gg.keys())
-
-            plotarr2[w+'avgcorr'] += gg['corr']
-            #   plt.figure()
-    #print(plotarr2['wigglesr'])
-    #print(plotarr2['wigglesavgcorr'])
-    #print(plotarr2['no-wigglesavgcorr'])
-    
-    plt.figure()
-    plt.semilogx(plotarr2['wigglesr'], plotarr2['wigglescorr'], label = 'Wiggle, '+ redshift)
-    plt.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
-    plt.legend()
-    plt.show()
-
-    plt.figure()
-    plt.semilogx(plotarr2['no-wigglesr'],plotarr2['no-wigglescorr'], label = 'No Wiggles, '+redshift)
-    plt.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
-    plt.legend()
-plt.show()
-#plt.figure()
-#plt.semilogx(plotarr2['wigglesr'],plotarr2['wigglesr']**2.0*(plotarr2['wigglesavgcorr'] - plotarr2['no-wigglesavgcorr'])/num_realizations)
-#plt.show()
-#plt.plot(datacc[0],datacc[1])
-#   plt.show()
-'''
