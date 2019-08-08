@@ -49,19 +49,10 @@ for (zlab,redshift) in zip(zlabs,redshifts):
                 sortdata.where(sortdata <19.0, 19.0,inplace=True)
                 #print(sortdata.value_counts().sort_index())
 
-                #logdata.where(logdata <13.94, 13.94,inplace=True)
-                #print(logdata.value_counts().sort_index())
+                logdata.where(logdata <13.94, 13.94,inplace=True)
+                print(logdata.value_counts().sort_index())
                 
                 #(histogram,bins,patches)= plt.hist(sortdata, bins=25,range = [12.5,15.5],edgecolor='black', density=None, histtype='bar', align = 'mid')
-    
-                #plt.hist(sortdata)
-                #plt.show()
-                #print(histogram)
-                #print(bins)
-    
-
-                #sns.distplot(data.mass)
-                #plt.show()
 
 
                 from sklearn.model_selection import StratifiedShuffleSplit

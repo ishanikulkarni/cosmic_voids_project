@@ -25,10 +25,6 @@ Nmesh=256
 
 BoxSize = 2000.0
 
-#files for less than 10^12.55:
-files = ['/projects/SPERGEL/COLA_runs/voidcatalogs/z1Quijote/Quijote_ss1.0/sample_Quijote_wiggles_0_halos_z1.00/centers_central_Quijote_wiggles_0_halos_z1.00.out']#,'/projects/SPERGEL/COLA_runs/voidcatalogs/z1Quijote/Quijote_ss1.0/sample_Quijote_wiggles_samples_0_halos_z1.00/centers_central_Quijote_wiggles_samples_0_halos_z1.00.out']
-
-filecuts= ['ogwiggles']#,'randomsampling']
 
 #CREATING PANEL OF CORRELATION FUNCTIONS. TOP IS CORR FUNC FOR WIGGLES FOR ALL MASS CUTS/SAMPLES AND BOTTOM IS ORIGINAL WIGGLES- NO-WIGGLES
 
@@ -45,31 +41,21 @@ xi = {}
 
 for w in wiggles:
     for realization in range(0,num_realizations):
-        #filewrite = '/tigress/isk/COLA_runs/plot_data/'+'z'+zlab+sim+'/Xihh_'+w+d+'_nbodykit_'+sim+'_halos_'+str(realization)+scale+binlab+'_drdefault.dat'
            
         filewrite = '/projects/SPERGEL/COLA_runs/plot_data/z1Quijote/Xihh_' + w+ '_' + str(realization)+'_' + sim +'_log_largebins.dat'
 
         data_array = []
         data_array =  pd.read_csv(filewrite,delim_whitespace=True, header=None,engine='python',index_col=False,comment='#')
         gg={}
-        #print(data_array)
         gg['r'] = data_array[0]
         gg['corr']=data_array[1]
         xi[w+str(realization)] = gg['corr']
-        #gg[w+'avgcorr'] = np.zeros(len(gg[w+'corr']))
-        #gg[w+'avgcorr'] += gg[w+'corr']
-        
+     
         if w+'avgcorr' not in plotarr.keys():
             plotarr[w+'avgcorr'] = np.zeros(len(gg['r']))
             plotarr[w+'r'] = gg['r']
             plotarr[w+'corr'] = gg['corr']
-        #try:
-        #   plotarr3[w+'r'] == gg['r']
-        #except ValueError:
-        #   print('r values do not match previous r values')
-        #print(gg.keys())
-
-        #print(plotarr3.keys())
+    
         plotarr[w+'avgcorr'] += gg['corr']
         
 plotarr['wigglesavgcorr']= (1.0/num_realizations) *plotarr['wigglesavgcorr']
@@ -81,7 +67,6 @@ sigmaarr = {}
 for w in wiggles:
     sigmaarr[w] = np.zeros(len(gg['r']))
     for realization in range(0,num_realizations):
-        #realization = '_'+str(int(i))
         sigmaarr[w] += (xi[w+str(realization)] - plotarr[w+'avgcorr'])**2.0
 
     sigmaarr[w] /= num_realizations
@@ -112,7 +97,6 @@ ax.plot(plotarr['wigglesr'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'],
 ax.fill_between(plotarr['wigglesr'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'] +plotarr['wiggles'+'r']**2.0*sigmaarr['wiggles'], plotarr['wiggles'+'r']**2.0*plotarr['wigglescorr'] -plotarr['wiggles'+'r']**2.0*sigmaarr['wiggles'], alpha=0.2)
 ax.set_xscale('log')
 ax.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
-#ax.set_title("Voids")
 ax.set_ylabel(r"$r^2 \xi(r)$ [$h\mathrm{Mpc}^{-1}$]", fontsize = 13)
 ax.set_xlim(xmin = 20, xmax =250)
 ax.set_ylim(ymin = -20, ymax =75)

@@ -25,10 +25,6 @@ Nmesh=256
 
 BoxSize = 2000.0
 
-#files for less than 10^12.55:
-files = ['/projects/SPERGEL/COLA_runs/voidcatalogs/z1Quijote/Quijote_ss1.0/sample_Quijote_wiggles_0_halos_z1.00/centers_central_Quijote_wiggles_0_halos_z1.00.out']#,'/projects/SPERGEL/COLA_runs/voidcatalogs/z1Quijote/Quijote_ss1.0/sample_Quijote_wiggles_samples_0_halos_z1.00/centers_central_Quijote_wiggles_samples_0_halos_z1.00.out']
-
-filecuts= ['ogwiggles']#,'randomsampling']
 
 #CREATING PANEL OF CORRELATION FUNCTIONS. TOP IS CORR FUNC FOR WIGGLES FOR ALL MASS CUTS/SAMPLES AND BOTTOM IS ORIGINAL WIGGLES- NO-WIGGLES
 
@@ -81,9 +77,7 @@ for w in wiggles:
             # Do correlation function
             os.chdir('/')
 	
-            #print(type(realization))
-            #if not (os.path.exists('/tigress/isk/Documents/research/projects/COLA_runs/plot_data/'+cola+'z'+redshift+sim+'/Xivv_'+crazy+w+d+'_nbodykit_'+sim+realization+c+'_'+scale+binlab+'.dat')):
-       
+              
             if not os.path.exists(os.path.dirname(filewrite)):
                 os.makedirs(os.path.dirname(filewrite))
 
@@ -137,7 +131,6 @@ sigmaarr = {}
 for w in wiggles:
     sigmaarr[w] = np.zeros(len(gg['r']))
     for realization in range(0,num_realizations):
-        #realization = '_'+str(int(i))
         sigmaarr[w] += (xi[w+str(realization)] - plotarr[w+'avgcorr'])**2.0
 
     sigmaarr[w] /= num_realizations
@@ -281,17 +274,9 @@ for w in wiggles:
             plotarr[w+'avgcorr'] = np.zeros(len(gg['r']))
             plotarr[w+'r'] = gg['r']
             plotarr[w+'corr'] = gg['corr']
-        #try:
-        #   plotarr3[w+'r'] == gg['r']
-        #except ValueError:
-        #   print('r values do not match previous r values')
-        #print(gg.keys())
 
-        #print(plotarr3.keys())
         plotarr[w+'avgcorr'] += gg['corr']
         
-#print('r values = ')
-#print(gg['r'][1]-gg['r'][0])
 
 plotarr['wigglesavgcorr']= (1.0/num_realizations) *plotarr['wigglesavgcorr']
 plotarr['no-wigglesavgcorr']= (1.0/num_realizations) *plotarr['no-wigglesavgcorr']
@@ -301,7 +286,6 @@ sigmaarr = {}
 for w in wiggles:
     sigmaarr[w] = np.zeros(len(gg['r']))
     for realization in range(0,num_realizations):
-        #realization = '_'+str(int(i))
         sigmaarr[w] += (xi[w+str(realization)] - plotarr[w+'avgcorr'])**2.0
 
     sigmaarr[w] /= num_realizations

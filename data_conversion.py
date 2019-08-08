@@ -49,6 +49,5 @@ for wiggle in wiggle_set:
        	   data = np.array([dict['ID'], dict['x_pos'] , dict['y_pos'] , dict['z_pos'], dict['x_vel'], dict['y_vel'], dict['z_vel'], mass])
        	   data = data.T
        	   np.savetxt(file, data, fmt=('%d' ,'%.8f',' %.8f', '%.8f', '%.8f', '%.8f', '%.8f','%d'))
-       	   #file.write(str(x_pos) + ' ' + str(y_pos) + ' ' + str(z_pos) + ' ' + str(x_vel) + ' ' + str(y_vel) + ' ' + str(z_vel) + ' ' + str(mass))
        	   file.write("-99 -99 -99 -99 -99 -99 -99 -99")
        	   file.close()

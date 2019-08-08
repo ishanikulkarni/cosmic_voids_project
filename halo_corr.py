@@ -9,18 +9,10 @@ import dask.array as da
 from nbodykit.source.catalog import HaloCatalog, HDFCatalog
 import os
 
-#Add two for loops to go through all the realizations and stuff
-
 densities = ['']
-wiggles = ['wiggles','no-wiggles']#['wiggles', 'no-wiggles']
+wiggles = ['wiggles','no-wiggles']
 
 sim = 'Quijote'
-#redshift = '0'
-# Should match redshift above; stands for z label in pathname
-#zlab = '1.00'
-#zlabs = ['0','1']
-#redshifts = ['0.00','1.00']
-
 zlabs = '1'
 redshifts = ['1.00']
 scale = 'lin'
@@ -34,7 +26,6 @@ Nmesh=256
 BoxSize = 2000.0
 
 d='_'
-#realization=0
 os.chdir('/')
 
 fig, axs = plt.subplots(2, 1, sharex=True, figsize = (8,10))
@@ -42,6 +33,7 @@ fig.tight_layout
 fig.subplots_adjust(hspace=0)
 fig.subplots_adjust(wspace=0)
 plt.rc('legend', fontsize = 'medium')
+
 
 
 # halos
@@ -93,7 +85,6 @@ for (redshift,zlab) in zip(redshifts,zlabs):
 
                 # Halos
                 # Do correlation function
-                #if not (os.path.exists(file4)):
                 t = nlab.FFTCorr(mesh, mode='1d', Nmesh=Nmesh, BoxSize = BoxSize, dr = 1.0)
 
                 gg = t.corr
@@ -118,12 +109,8 @@ for (redshift,zlab) in zip(redshifts,zlabs):
             else:
                 data_array =  pd.read_csv(file4,delim_whitespace=True, header=None,engine='python',index_col=False,comment='#')
                 gg={}
-                # print(data_array)
                 gg['r'] = data_array[0]
                 gg['corr']=data_array[1]
-                
-                #gg[w+'avgcorr'] = np.zeros(len(gg[w+'corr']))
-                #gg[w+'avgcorr'] += gg[w+'corr']
                 
             if w+'avgcorr' not in plotarr2.keys():
                 plotarr2[w+'avgcorr'] = np.zeros(len(gg['r']))
@@ -136,18 +123,13 @@ for (redshift,zlab) in zip(redshifts,zlabs):
             #print(gg.keys())
                             
             plotarr2[w+'avgcorr'] += gg['corr']
-            #plt.figure()
-            #print(plotarr2['wigglesr'])
-            #print(plotarr2['wigglesavgcorr'])
-            #print(plotarr2['no-wigglesavgcorr'])
-
+            
         plotarr2[w+'avgcorr']= plotarr2[w+'avgcorr']/num_realizations
 
     ax = axs[0]    
     ax.plot(plotarr2['wigglesr'], plotarr2['wigglesr']**2*plotarr2['wigglesavgcorr'], label = 'BAO')
     ax.set_xscale('log')
     ax.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
-    #ax.title('Halo Correlation Function')
     ax.legend()
             
     ax.plot(plotarr2['no-wigglesr'],plotarr2['no-wigglesr']**2*plotarr2['no-wigglesavgcorr'], label = 'BAO-removed')
@@ -157,18 +139,13 @@ for (redshift,zlab) in zip(redshifts,zlabs):
     ax.set_xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]", fontsize = 12)
     ax.set_ylabel(r"$r^2 \Delta \xi(r)$ [$h^{3}\mathrm{Mpc}^{-3}$]", fontsize = 12)
     ax.set_xlim(xmin = 20, xmax = 200)
-    #plt.ylim(ymin=-.005,ymax=.02)
 
     ax = axs[1]
     ax.plot(plotarr2['wigglesr'],plotarr2['wigglesr']**2.0*(plotarr2['wigglesavgcorr'] - plotarr2['no-wigglesavgcorr'])/num_realizations, label = 'BAO - no-BAO')
     ax.set_xscale('log')
-    #ax.title('Halo Correlation Difference Function')
     ax.hlines(y=0,xmin=0, xmax=1000, linestyles='solid')
     ax.legend(loc = "lower left")
     ax.set_xlabel(r"$r$ [$h^{-1} \ \mathrm{Mpc}$]", fontsize = 12)
     ax.set_ylabel(r"$r^2 \Delta \xi(r)$ [$h^{3}\mathrm{Mpc}^{-3}$] BAO - no-BAO", fontsize = 12)
     ax.set_xlim(xmin = 20, xmax = 200)
 plt.show()
-#plt.plot(datacc[0],datacc[1])
-#plt.show()
-
