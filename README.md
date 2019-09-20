@@ -1,1 +1,1 @@
-Baryon acoustic Factor in cosmic void project
+Excavating the Baryon Acoustic Oscillation Feature from Cosmic Voids
